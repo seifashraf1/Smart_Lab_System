@@ -325,12 +325,23 @@ int main(void)
 //	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_7,GPIO_PIN_SET);  //RS
 	
 		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_10,GPIO_PIN_RESET); //E
-	
+  char uart_buf[20];		
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	sprintf(uart_buf, "Motion Detected\r\n");
+
+	if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6)) // if the pin is HIGH 
+	{
+			HAL_GPIO_WritePin (GPIOA, GPIO_PIN_7, 1); // turn on LED 
+			HAL_UART_Transmit(&huart2, (uint8_t *)uart_buf, sizeof(uart_buf), HAL_MAX_DELAY);
+			HAL_Delay (1000); 
+			HAL_GPIO_WritePin (GPIOA, GPIO_PIN_7, 0); // LED OFF 
+
+			while (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6)); //wait for pin to go low 
+	}
   }
   /* USER CODE END 3 */
 }
